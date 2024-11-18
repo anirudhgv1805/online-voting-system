@@ -1,37 +1,54 @@
 package com.onlinevotingsystem.app.services;
 
 import com.onlinevotingsystem.app.models.Election;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.onlinevotingsystem.app.repositories.ElectionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ElectionService {
 
-    // In-memory list of elections
-    private List<Election> elections = new ArrayList<>();
+    private final ElectionRepository electionRepository;
+
+    @Autowired
+    public ElectionService(ElectionRepository electionRepository) {
+        this.electionRepository = electionRepository;
+    }
 
     // Create a new election
     public void createElection(String question) {
-        elections.add(new Election(question));
+        // Check if an election with this question already exists
+        Optional<Election> existingElection = electionRepository.findByQuestion(question);
+        if (existingElection.isEmpty()) {
+            Election election = new Election(question);
+            electionRepository.save(election);  // Save to MongoDB
+        } else {
+            // Handle the case where the election already exists
+            System.out.println("Election with this question already exists.");
+        }
     }
 
     // Get the list of all elections
     public List<Election> getAllElections() {
-        return elections;
+        return electionRepository.findAll(); // Retrieve from MongoDB
     }
 
     // Vote in an election
     public void vote(String question, boolean voteYes) {
-        for (Election election : elections) {
-            if (election.getQuestion().equals(question)) {
-                if (voteYes) {
-                    election.incrementYesVotes();
-                } else {
-                    election.incrementNoVotes();
-                }
+        Optional<Election> electionOptional = electionRepository.findByQuestion(question); // Custom query
+        if (electionOptional.isPresent()) {
+            Election election = electionOptional.get();
+            if (voteYes) {
+                election.incrementYesVotes();
+            } else {
+                election.incrementNoVotes();
             }
+            electionRepository.save(election); // Save the updated election to MongoDB
+        } else {
+            System.out.println("Election not found for the given question: " + question);
         }
     }
 }

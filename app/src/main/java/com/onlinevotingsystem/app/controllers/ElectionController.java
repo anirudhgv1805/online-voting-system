@@ -11,7 +11,12 @@ import java.util.List;
 @RequestMapping("/api/elections")
 public class ElectionController {
 
-    private final ElectionService electionService = new ElectionService();
+    private final ElectionService electionService;
+
+    // Constructor-based dependency injection
+    public ElectionController(ElectionService electionService) {
+        this.electionService = electionService;
+    }
 
     // Create election
     @PostMapping("/create")
@@ -23,6 +28,7 @@ public class ElectionController {
     // Get all elections
     @GetMapping("/all")
     public List<Election> getAllElections() {
+        System.out.println(electionService.getAllElections());
         return electionService.getAllElections();
     }
 
