@@ -1,26 +1,34 @@
 package com.onlinevotingsystem.app.services;
 
 import com.onlinevotingsystem.app.models.User;
-import java.util.HashMap;
-import java.util.Map;
+import com.onlinevotingsystem.app.repositories.UserRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService {
 
-    // In-memory user store (username -> user object)
-    private Map<String, User> users = new HashMap<>();
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     // Register a new user
     public boolean registerUser(String registerNo, String name, String password) {
-        if (users.containsKey(registerNo)) {
+        // Check if a user with the same registerNo already exists
+        if (userRepository.findByRegisterNo(registerNo) != null) {
             return false; // User already exists
         }
-        users.put(registerNo, new User(registerNo, name, password));
+        // Create and save a new user
+        User newUser = new User(registerNo, name, password);
+        System.out.println(newUser);
+        userRepository.save(newUser);
         return true;
     }
 
     // Login and validate user
     public boolean loginUser(String registerNo, String password) {
-        User user = users.get(registerNo);
+        User user = userRepository.findByRegisterNo(registerNo);
         return user != null && user.getPassword().equals(password);
     }
 }

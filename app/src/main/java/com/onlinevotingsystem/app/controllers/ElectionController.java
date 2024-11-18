@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "${cors.allowedOrigins}")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/elections")
 public class ElectionController {

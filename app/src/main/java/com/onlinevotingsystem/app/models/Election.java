@@ -1,10 +1,22 @@
 package com.onlinevotingsystem.app.models;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import lombok.Data;
+
+@Data
+@Document(collection = "election") 
 public class Election {
+
+    @Id
+    private String id;
+
     private String question;
     private int yesVotes;
     private int noVotes;
 
+    public Election(){}
     // Constructor
     public Election(String question) {
         this.question = question;

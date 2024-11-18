@@ -85,13 +85,6 @@
         <artifactId>spring-boot-starter-data-mongodb</artifactId>
     </dependency>
 
-    <!-- MongoDB driver (if you want to configure it directly, but Spring Boot starter should suffice) -->
-   
-  	
-	<dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-security</artifactId>
-    </dependency>
 	</dependencies>
 
 	<build>
